@@ -1,25 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import styled from 'styled-components'
+import { ConnectedRouter } from 'connected-react-router'
+import { Switch } from 'react-router-dom'
+import { Provider } from 'react-redux'
+
+const Wrapper = styled.div`
+  height: 100%;
+  width: 100%;
+`
+
+const App = (props) => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-         PHAN PHAN PHAN
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Wrapper>
+      <Provider store={props.store}>
+          <ConnectedRouter history={props.history}>
+            <Switch>
+              {props.routes.map((route, i) =>
+                route.routes.map((childRoute, j) => (
+                  <route.layout key={childRoute.path} {...childRoute} />
+                ))
+              )}
+            </Switch>
+          </ConnectedRouter>
+      </Provider>
+    </Wrapper>
   );
 }
 

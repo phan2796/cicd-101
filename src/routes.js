@@ -1,20 +1,17 @@
-import React from 'react'
-import DefaultLayout from './layouts/DefaultLayout'
-import asyncComponent from './components/AsyncComponent'
+import DefaultLayout from "./layouts/DefaultLayout";
+import asyncComponent from "./components/AsyncComponent";
 
-const AsyncHome = asyncComponent(() => import('./containers/home'))
+const AsyncHome = asyncComponent(() => import("./containers/home"));
 
 export default [
   {
     layout: DefaultLayout,
     routes: [
       {
-        path: '/',
+        path: "/",
         component: AsyncHome,
         exact: true
-      },
-
+      }
     ]
   }
-]
-
+];

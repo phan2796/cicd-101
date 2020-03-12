@@ -1,12 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import { render } from 'react-dom'
+import store, { history } from './store'
+import routes from './routes'
 import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const target = document.getElementById('root')
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// @see https://github.com/davezuko/react-redux-starter-kit/blob/master/src/main.js
+let renderApp = () => {
+  const App = require('./App').default
+
+  render(<App store={store} history={history} routes={routes} />, target)
+}
+
+// @see https://github.com/facebook/create-react-app/issues/2317
+if (module.hot) {
+  module.hot.accept(['./App', './routes'], () => {
+    renderApp()
+  })
+}
+
+renderApp()

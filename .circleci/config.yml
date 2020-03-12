@@ -1,13 +1,83 @@
-version: 2.1
+version: 2
 jobs:
-  test:
+  build:
     docker:
-      - image: circleci/node:10.15.0-jessie-browsers-legacy
+      - image: circleci/node:8.9.1
     steps:
       - checkout
+      - setup_remote_docker
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: Install dependencies
-          command: yarn
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
       - run:
-          name: Test
-          command: yarn test
+          name: Build the application
+          command: npm run build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - package.json
+            - node_modules
+            - src
+            - build
+  deploy-test:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: ./
+      - run:
+          #Get all pre-requisites
+          command: |
+            apk add --no-cache \
+              py-pip=9.0.0-r1
+            pip install \
+              awscli==1.14.37
+            # Login to ecr and docker login
+            aws_login=`aws ecr get-login --no-include-email --region eu-west-1`
+            eval $aws_login
+            aws s3 sync build/ s3://test.hahuy.asia
+  deploy-production:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: ./
+      - run:
+          #Get all pre-requisites
+          command: |
+            apk add --no-cache \
+              py-pip=9.0.0-r1
+            pip install \
+              awscli==1.14.37
+            # Login to ecr and docker login
+            aws_login=`aws ecr get-login --no-include-email --region eu-west-1`
+            eval $aws_login
+            aws s3 sync build/ s3://www.hahuy.asia
+
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - build
+      - deploy-test:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - test
+      - deploy-production:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master

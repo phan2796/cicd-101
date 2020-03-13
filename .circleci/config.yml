@@ -73,7 +73,7 @@ workflows:
       #     filters:
       #       branches:
       #         only:
-      #           - test
+      # - test
       - deploy-production:
           requires:
             - build

@@ -60,7 +60,7 @@ jobs:
             # Login to ecr and docker login
             aws_login=`aws ecr get-login --no-include-email --region eu-west-1`
             eval $aws_login
-            aws s3 sync build/ s3://www.hahuy.asia
+            aws s3 sync build/ s3://hahuy.asia
 
 workflows:
   version: 2

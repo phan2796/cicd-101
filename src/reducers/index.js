@@ -1,11 +1,12 @@
 import { combineReducers } from "redux";
 import { connectRouter } from "connected-react-router";
 
-// import actions from '../modules/actions'
+import game from "./game";
 
 export const createAppReducer = (history, asyncReducers) =>
   combineReducers({
     router: connectRouter(history),
+    game,
     ...asyncReducers
   });
 

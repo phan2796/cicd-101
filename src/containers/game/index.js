@@ -1,69 +1,67 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { Wrapper, SquareWrapper, Square } from "./style";
-import { colors } from "./utils";
+import { makeSquaresData, resetGame, gameOver } from "../../reducers/game";
 
-function Counter() {
-  const [count, setCount] = useState(0);
-  const [number, setNumber] = useState(2);
-  const [color, setColor] = useState(10);
-  const [isRunning, setIsRunning] = useState(false);
+const Counter = props => {
+  const [count, setCount] = useState(35);
+  const [isRunning, setIsRunning] = useState(true);
   useEffect(() => {
-    setColor(colors[Math.floor(Math.random() * colors.length)]);
-    return () => {};
-  }, []);
+    props.makeSquaresData(2);
+    return () => props.resetGame();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  let { squares, number, correctIndex, isOver, score } = props;
 
-  let squares = Array(number * number).fill({
-    color
-  });
+  score = score < 0 ? 0 : score;
+
   let template = "";
   for (let index = 0; index < number; index++) {
     template += "auto ";
   }
-  let basic = 100 / number;
   useInterval(
     () => {
       // Your custom logic here
       if (count <= 1) {
         setIsRunning(false);
+        props.gameOver();
       }
       setCount(count - 1);
     },
     isRunning ? 100 : null
   );
 
-  function handleIsRunningChange(e) {
-    setIsRunning(e.target.checked);
-  }
+  const changeColor = value => {
+    props.makeSquaresData(number + value);
+  };
 
-  const changeColor = () => {
-    setColor(colors[Math.floor(Math.random() * colors.length)]);
+  const handleSelectItem = index => {
+    if (index === correctIndex) {
+      changeColor(1);
+      setCount(50);
+    }
   };
 
   return (
     <Wrapper>
-      <h1>{count}</h1>
-      <input
-        type="checkbox"
-        checked={isRunning}
-        onChange={handleIsRunningChange}
-      />{" "}
-      Running
-      <br />
-      <button onClick={() => setNumber(number + 1)}>Increase</button>
-      <button onClick={() => setNumber(number - 1)}>Decrease</button>
-      <button onClick={() => changeColor()}>Change</button>
-      <SquareWrapper template={template}>
-        {squares.map((s, index) => (
-          <Square basis={basic} color={squares[index].color}>
-            {index}
-          </Square>
-        ))}
-      </SquareWrapper>
+      <div className="left-content">
+        <h1>Your score: </h1>
+        <p className="score">{score}</p>
+      </div>
+      <div className="right-content">
+        <h3>Time remaining: {count}</h3>
+        <SquareWrapper template={template} isOver={isOver}>
+          {squares.map((s, index) => (
+            <Square
+              color={squares[index].color}
+              onClick={() => handleSelectItem(index)}
+            />
+          ))}
+        </SquareWrapper>
+      </div>
       {/* <input value={delay} onChange={handleDelayChange} /> */}
     </Wrapper>
   );
-}
+};
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -85,4 +83,17 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 
-export default connect(null, null)(Counter);
+const mapStateToProps = state => ({
+  squares: state.game.squares,
+  number: state.game.number,
+  correctIndex: state.game.correctIndex,
+  isOver: state.game.isOver,
+  score: state.game.score
+});
+
+const mapDispatchtoProps = {
+  makeSquaresData,
+  resetGame,
+  gameOver
+};
+export default connect(mapStateToProps, mapDispatchtoProps)(Counter);

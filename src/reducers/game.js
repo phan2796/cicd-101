@@ -1,0 +1,121 @@
+import actions from "../modules/actions";
+
+const MAX_LENGTH = 5;
+const MIN_RANGE = 12;
+const colors = [
+  "55efc4",
+  "81ecec",
+  "74b9ff",
+  "a29bfe",
+  "00b894",
+  "00cec9",
+  "7bed9f",
+  "70a1ff",
+  "ffeaa7",
+  "fab1a0",
+  "ff7675",
+  "fd79a8",
+  "fdcb6e",
+  "e17055",
+  "dfe6e9",
+  "e84393",
+  "b2bec3",
+  "636e72"
+];
+
+//  random hex string generator
+const getHexColor = (c1, range) => {
+  var hexStr = (parseInt(c1, 16) - range).toString(16);
+  while (hexStr.length < 6) {
+    hexStr = "0" + hexStr;
+  } // Zero pad.
+  return hexStr;
+};
+
+const { UPDATE_GAME_DATA } = actions;
+
+export const updateGameData = payload => ({
+  type: UPDATE_GAME_DATA,
+  payload
+});
+
+// thunks
+export const makeSquaresData = number => {
+  return async (dispatch, getState) => {
+    let { score } = getState().game;
+    let squares = [];
+    if (number > MAX_LENGTH) {
+      number = MAX_LENGTH;
+    }
+
+    let color = colors[Math.floor(Math.random() * colors.length)];
+    for (let index = 0; index < number * number; index++) {
+      squares.push({
+        color
+      });
+    }
+
+    let randomIndex = Math.floor(Math.random() * number * number);
+
+    let range = 50 - score * score;
+    if (range < MIN_RANGE) {
+      range = MIN_RANGE;
+    }
+    squares[randomIndex].color = getHexColor(color, MIN_RANGE);
+
+    dispatch(
+      updateGameData({
+        squares: [...squares],
+        number,
+        correctIndex: randomIndex,
+        score: score + 1
+      })
+    );
+  };
+};
+
+export const resetGame = () => {
+  return async dispatch => {
+    try {
+      dispatch(updateGameData(initialState));
+    } catch (error) {}
+  };
+};
+
+export const gameOver = () => {
+  return async dispatch => {
+    try {
+      dispatch(
+        updateGameData({
+          isOver: true
+        })
+      );
+    } catch (error) {}
+  };
+};
+
+// action handlers
+const ACTION_HANDLERS = {
+  [UPDATE_GAME_DATA]: (state, action) => {
+    return {
+      ...state,
+      ...action.payload
+    };
+  }
+};
+
+const initialState = {
+  squares: [],
+  color: "",
+  number: 2,
+  score: -1,
+  correctIndex: 0,
+  isOver: false
+};
+
+// reducers
+export default (state = initialState, action) => {
+  const handler = ACTION_HANDLERS[action.type];
+
+  return handler ? handler(state, action) : state;
+};

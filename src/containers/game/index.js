@@ -63,8 +63,8 @@ const Counter = props => {
 
   const handleSelectItem = index => {
     if (index === correctIndex) {
-      changeColor(1);
       setCount(TIME_LIMIT);
+      changeColor(1);
     }
   };
 

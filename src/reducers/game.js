@@ -6,7 +6,7 @@ export const TIME_LIMIT = 25;
 const colors = [
   "55efc4",
   "81ecec",
-  "74b9ff",
+  "a4b0be",
   "a29bfe",
   "00b894",
   "00cec9",

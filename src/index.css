@@ -9,6 +9,10 @@ body {
 .close {
   display: none !important;
 }
+.modal-dialog {
+  margin-left: calc(50% + 150px) !important;
+  transform: translateX(-50%) !important;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

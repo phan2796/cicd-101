@@ -2,7 +2,7 @@ import actions from "../modules/actions";
 
 const MAX_LENGTH = 5;
 const MIN_RANGE = 10;
-export const TIME_LIMIT = 30;
+export const TIME_LIMIT = 25;
 const colors = [
   "55efc4",
   "81ecec",

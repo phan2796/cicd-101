@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { Wrapper, SquareWrapper, Square } from "./style";
-import { colors, addHexColor } from "./utils";
+import { colors } from "./utils";
 
 function Counter() {
   const [count, setCount] = useState(0);
   const [number, setNumber] = useState(2);
-  const [delay, setDelay] = useState(10);
   const [color, setColor] = useState(10);
-  const [isRunning, setIsRunning] = useState(true);
+  const [isRunning, setIsRunning] = useState(false);
   useEffect(() => {
     setColor(colors[Math.floor(Math.random() * colors.length)]);
     return () => {};
@@ -22,19 +21,16 @@ function Counter() {
     template += "auto ";
   }
   let basic = 100 / number;
-  console.log(basic);
-  // useInterval(() => {
-  //   // Your custom logic here
-  //   if(count <= 1){
-  //     setIsRunning(false)
-  //   }
-  //   setCount(count - 1);
-
-  // }, isRunning ? delay : null);
-
-  function handleDelayChange(e) {
-    setDelay(Number(e.target.value));
-  }
+  useInterval(
+    () => {
+      // Your custom logic here
+      if (count <= 1) {
+        setIsRunning(false);
+      }
+      setCount(count - 1);
+    },
+    isRunning ? 100 : null
+  );
 
   function handleIsRunningChange(e) {
     setIsRunning(e.target.checked);

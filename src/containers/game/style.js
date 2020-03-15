@@ -30,6 +30,9 @@ export const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
   }
+  .close {
+    display: none !important;
+  }
 `;
 
 export const SquareWrapper = styled.div`

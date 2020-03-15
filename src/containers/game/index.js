@@ -1,11 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { Wrapper, SquareWrapper, Square } from "./style";
-import { makeSquaresData, resetGame, gameOver } from "../../reducers/game";
+import {
+  makeSquaresData,
+  resetGame,
+  gameOver,
+  handleStart,
+  playAgain,
+  TIME_LIMIT
+} from "../../reducers/game";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 const Counter = props => {
-  const [count, setCount] = useState(35);
-  const [isRunning, setIsRunning] = useState(true);
+  const [count, setCount] = useState(TIME_LIMIT);
+  const [isRunning, setIsRunning] = useState(false);
+  const [modal, setModal] = useState(true);
+  const [modalReplay, setModalReplay] = useState(false);
+  const toggle = () => setModal(!modal);
+  const toggleReplay = () => setModalReplay(!modalReplay);
   useEffect(() => {
     props.makeSquaresData(2);
     return () => props.resetGame();
@@ -23,6 +35,7 @@ const Counter = props => {
       // Your custom logic here
       if (count <= 1) {
         setIsRunning(false);
+        setModalReplay(true);
         props.gameOver();
       }
       setCount(count - 1);
@@ -34,32 +47,71 @@ const Counter = props => {
     props.makeSquaresData(number + value);
   };
 
+  const handleStart = () => {
+    toggle();
+    setIsRunning(true);
+    props.handleStart();
+  };
+
+  const handlePlayAgain = () => {
+    toggleReplay();
+    props.playAgain();
+    props.makeSquaresData(2);
+    setCount(TIME_LIMIT);
+    setIsRunning(true);
+  };
+
   const handleSelectItem = index => {
     if (index === correctIndex) {
       changeColor(1);
-      setCount(50);
+      setCount(TIME_LIMIT);
     }
   };
 
   return (
-    <Wrapper>
-      <div className="left-content">
-        <h1>Your score: </h1>
-        <p className="score">{score}</p>
-      </div>
-      <div className="right-content">
-        <h3>Time remaining: {count}</h3>
-        <SquareWrapper template={template} isOver={isOver}>
-          {squares.map((s, index) => (
-            <Square
-              color={squares[index].color}
-              onClick={() => handleSelectItem(index)}
-            />
-          ))}
-        </SquareWrapper>
-      </div>
-      {/* <input value={delay} onChange={handleDelayChange} /> */}
-    </Wrapper>
+    <>
+      <Wrapper>
+        <div className="left-content">
+          <h1>Your score: </h1>
+          <p className="score">{score}</p>
+        </div>
+        <div className="right-content">
+          <h3>Time remaining: {count}</h3>
+          <SquareWrapper template={template} isOver={isOver}>
+            {squares.map((s, index) => (
+              <Square
+                color={squares[index].color}
+                onClick={() => handleSelectItem(index)}
+              />
+            ))}
+          </SquareWrapper>
+        </div>
+        <Modal isOpen={modal} centered keyboard={false} backdrop={"static"}>
+          <ModalHeader>How good are your eyes?</ModalHeader>
+          <ModalBody>Please select a different color square on time!</ModalBody>
+          <ModalFooter>
+            <Button color="success" onClick={() => handleStart()}>
+              Let start!!!
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal
+          isOpen={modalReplay}
+          centered
+          keyboard={false}
+          backdrop={"static"}
+        >
+          <ModalHeader>Game over</ModalHeader>
+          <ModalBody>Your score: {score}</ModalBody>
+          <ModalFooter>
+            <Button color="success" onClick={() => handlePlayAgain()}>
+              Play Again!!!
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </Wrapper>
+    </>
   );
 };
 
@@ -94,6 +146,8 @@ const mapStateToProps = state => ({
 const mapDispatchtoProps = {
   makeSquaresData,
   resetGame,
-  gameOver
+  gameOver,
+  handleStart,
+  playAgain
 };
 export default connect(mapStateToProps, mapDispatchtoProps)(Counter);

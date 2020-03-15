@@ -1,7 +1,8 @@
 import actions from "../modules/actions";
 
 const MAX_LENGTH = 5;
-const MIN_RANGE = 12;
+const MIN_RANGE = 10;
+export const TIME_LIMIT = 30;
 const colors = [
   "55efc4",
   "81ecec",
@@ -74,11 +75,13 @@ export const makeSquaresData = number => {
   };
 };
 
-export const resetGame = () => {
+export const handleStart = () => {
   return async dispatch => {
-    try {
-      dispatch(updateGameData(initialState));
-    } catch (error) {}
+    dispatch(
+      updateGameData({
+        isOver: false
+      })
+    );
   };
 };
 
@@ -90,6 +93,27 @@ export const gameOver = () => {
           isOver: true
         })
       );
+    } catch (error) {}
+  };
+};
+
+export const playAgain = () => {
+  return async dispatch => {
+    try {
+      dispatch(
+        updateGameData({
+          isOver: false,
+          score: -1
+        })
+      );
+    } catch (error) {}
+  };
+};
+
+export const resetGame = () => {
+  return async dispatch => {
+    try {
+      dispatch(updateGameData(initialState));
     } catch (error) {}
   };
 };
@@ -110,7 +134,7 @@ const initialState = {
   number: 2,
   score: -1,
   correctIndex: 0,
-  isOver: false
+  isOver: true
 };
 
 // reducers

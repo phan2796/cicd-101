@@ -4,6 +4,7 @@ import store, { history } from "./store";
 import routes from "./routes";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const target = document.getElementById("root");
 

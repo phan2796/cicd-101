@@ -1,4 +1,6 @@
 import actions from "../modules/actions";
+import api from "../modules/api";
+import { toast } from "react-toastify";
 
 const MAX_LENGTH = 5;
 const MIN_RANGE = 10;
@@ -75,6 +77,52 @@ export const makeSquaresData = number => {
   };
 };
 
+export const getScores = () => {
+  return async dispatch => {
+    try {
+      let res = await api.getScores();
+      let scores = res.data.scores;
+      dispatch(
+        updateGameData({
+          scores
+        })
+      );
+    } catch (error) {}
+  };
+};
+
+export const submitScore = () => {
+  return async (dispatch, getState) => {
+    try {
+      let data = {
+        name: getState().game.name,
+        score: getState().game.score
+      };
+
+      await api.submitScore(data);
+
+      let res = await api.getScores();
+      let scores = res.data.scores;
+
+      dispatch(
+        updateGameData({
+          scores,
+          submited: true
+        })
+      );
+      toast.success("Your score have been saved!", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000
+      });
+    } catch (error) {
+      toast.error("Error!", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000
+      });
+    }
+  };
+};
+
 export const handleStart = () => {
   return async dispatch => {
     dispatch(
@@ -103,7 +151,8 @@ export const playAgain = () => {
       dispatch(
         updateGameData({
           isOver: false,
-          score: -1
+          score: -1,
+          submited: false
         })
       );
     } catch (error) {}
@@ -134,7 +183,9 @@ const initialState = {
   number: 2,
   score: -1,
   correctIndex: 0,
-  isOver: true
+  isOver: true,
+  scores: [],
+  submited: false
 };
 
 // reducers

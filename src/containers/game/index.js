@@ -1,12 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
-import { Wrapper, SquareWrapper, Square } from "./style";
+import {
+  Wrapper,
+  SquareWrapper,
+  Square,
+  RankingHeader,
+  RankingRecord
+} from "./style";
 import {
   makeSquaresData,
   resetGame,
   gameOver,
   handleStart,
   playAgain,
+  getScores,
+  updateGameData,
+  submitScore,
   TIME_LIMIT
 } from "../../reducers/game";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
@@ -19,10 +28,11 @@ const Counter = props => {
   const toggle = () => setModal(!modal);
   const toggleReplay = () => setModalReplay(!modalReplay);
   useEffect(() => {
+    props.getScores();
     props.makeSquaresData(2);
     return () => props.resetGame();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  let { squares, number, correctIndex, isOver, score } = props;
+  let { squares, number, correctIndex, isOver, score, submited } = props;
 
   score = score < 0 ? 0 : score;
 
@@ -68,12 +78,35 @@ const Counter = props => {
     }
   };
 
+  const handleChange = e => {
+    props.updateGameData({
+      [e.target.name]: [e.target.value]
+    });
+  };
+
+  const submitScore = e => {
+    e.preventDefault();
+    props.submitScore();
+  };
+
   return (
     <>
       <Wrapper>
         <div className="left-content">
           <h1>Your score: </h1>
           <p className="score">{score}</p>
+          <RankingHeader>
+            <p className="no">No.</p>
+            <p className="name">Name.</p>
+            <p className="number">Score</p>
+          </RankingHeader>
+          {props.scores.map((score, index) => (
+            <RankingRecord>
+              <p className="no">{index + 1}</p>
+              <p className="name">{score.name}</p>
+              <p className="number">{score.score}</p>
+            </RankingRecord>
+          ))}
         </div>
         <div className="right-content">
           <h3>Time remaining: {count}</h3>
@@ -102,13 +135,31 @@ const Counter = props => {
           keyboard={false}
           backdrop={"static"}
         >
-          <ModalHeader>Game over</ModalHeader>
-          <ModalBody>Your score: {score}</ModalBody>
-          <ModalFooter>
-            <Button color="success" onClick={() => handlePlayAgain()}>
-              Play Again!!!
-            </Button>
-          </ModalFooter>
+          <form onSubmit={submitScore}>
+            <ModalHeader>Game over! Your score: {score}</ModalHeader>
+            <ModalBody>
+              Enter your name:
+              <input
+                required
+                style={{ marginLeft: "10px" }}
+                type="text"
+                name="name"
+                value={props.name}
+                disabled={submited}
+                onChange={handleChange}
+              />
+            </ModalBody>
+            <ModalFooter>
+              {!submited && (
+                <Button color="success" type="submit">
+                  Submit
+                </Button>
+              )}
+              <Button color="primary" onClick={() => handlePlayAgain()}>
+                Play Again
+              </Button>
+            </ModalFooter>
+          </form>
         </Modal>
       </Wrapper>
     </>
@@ -140,7 +191,9 @@ const mapStateToProps = state => ({
   number: state.game.number,
   correctIndex: state.game.correctIndex,
   isOver: state.game.isOver,
-  score: state.game.score
+  score: state.game.score,
+  scores: state.game.scores,
+  submited: state.game.submited
 });
 
 const mapDispatchtoProps = {
@@ -148,6 +201,9 @@ const mapDispatchtoProps = {
   resetGame,
   gameOver,
   handleStart,
-  playAgain
+  playAgain,
+  getScores,
+  updateGameData,
+  submitScore
 };
 export default connect(mapStateToProps, mapDispatchtoProps)(Counter);

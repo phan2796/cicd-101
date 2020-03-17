@@ -9,6 +9,7 @@ export const Wrapper = styled.div`
   p.score {
     font-size: 50px;
     font-weight: 600;
+    margin: 0 0 50px 0;
   }
   background-color: #fff;
   min-height: 100vh;
@@ -22,6 +23,7 @@ export const Wrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 10px;
   }
   .right-content {
     display: flex;
@@ -29,9 +31,6 @@ export const Wrapper = styled.div`
     flex-grow: 1;
     justify-content: center;
     align-items: center;
-  }
-  .close {
-    display: none !important;
   }
 `;
 
@@ -53,4 +52,35 @@ export const Square = styled.div`
   flex-basis: ${props => (props.basis ? `${props.basis}%` : "1")};
   border-radius: 5px;
   cursor: pointer;
+`;
+
+export const RankingHeader = styled.div`
+  display: flex;
+  width: 100%;
+  p {
+    font-weight: 600;
+  }
+  .no {
+    flex-basis: 20px;
+  }
+  .number {
+    flex-basis: 40px;
+  }
+  .name {
+    flex-grow: 1;
+  }
+`;
+
+export const RankingRecord = styled.div`
+  display: flex;
+  width: 100%;
+  .no {
+    flex-basis: 20px;
+  }
+  .number {
+    flex-basis: 40px;
+  }
+  .name {
+    flex-grow: 1;
+  }
 `;

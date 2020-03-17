@@ -1,7 +1,7 @@
 import axios from "../config/axios";
 
 export const DOMAIN = process.env.REACT_APP_API;
-
+console.log(DOMAIN);
 const endpoints = {
   score: `${DOMAIN}/score`
 };

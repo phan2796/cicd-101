@@ -80,7 +80,7 @@ const Counter = props => {
 
   const handleChange = e => {
     props.updateGameData({
-      [e.target.name]: [e.target.value]
+      [e.target.name]: e.target.value
     });
   };
 

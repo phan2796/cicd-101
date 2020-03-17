@@ -18,6 +18,8 @@ jobs:
       - run:
           name: Build the application
           command: npm run build
+          environment:
+            REACT_APP_API: https://api.hahuy.asia
       - persist_to_workspace:
           root: ./
           paths:
@@ -43,8 +45,6 @@ jobs:
             aws_login=`aws ecr get-login --no-include-email --region eu-west-1`
             eval $aws_login
             aws s3 sync build/ s3://hahuy.asia
-          environment:
-            REACT_APP_API: http://api.hahuy.asia
 
 workflows:
   version: 2

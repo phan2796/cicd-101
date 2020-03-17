@@ -19,7 +19,7 @@ jobs:
           name: Build the application
           command: npm run build
           environment:
-            REACT_APP_API: https://api.hahuy.asia
+            REACT_APP_API: http://api.hahuy.asia
       - persist_to_workspace:
           root: ./
           paths:

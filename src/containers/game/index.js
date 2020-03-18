@@ -141,7 +141,7 @@ const Counter = props => {
               Enter your name:
               <input
                 required
-                maxLength="10"
+                maxLength="15"
                 style={{ marginLeft: "10px" }}
                 type="text"
                 name="name"

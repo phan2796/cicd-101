@@ -9,7 +9,7 @@ function Home() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>PHAN ELAH</p>
+        <p>Phan Phan</p>
         <Link className="App-link" to="/game">
           How good are your eyes?
         </Link>

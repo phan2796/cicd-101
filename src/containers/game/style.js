@@ -18,7 +18,7 @@ export const Wrapper = styled.div`
   text-align: center;
   display: flex;
   .left-content {
-    flex-basis: 300px;
+    flex-basis: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -56,7 +56,7 @@ export const Square = styled.div`
 
 export const RankingHeader = styled.div`
   display: flex;
-  width: 100%;
+  width: 300px;
   p {
     font-weight: 600;
   }
@@ -73,7 +73,7 @@ export const RankingHeader = styled.div`
 
 export const RankingRecord = styled.div`
   display: flex;
-  width: 100%;
+  width: 300px;
   .no {
     flex-basis: 20px;
   }

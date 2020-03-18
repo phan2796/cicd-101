@@ -10,7 +10,7 @@ body {
   display: none !important;
 }
 .modal-dialog {
-  margin-left: calc(50% + 150px) !important;
+  margin-left: calc(50% + 200px) !important;
   transform: translateX(-50%) !important;
 }
 code {

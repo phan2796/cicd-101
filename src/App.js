@@ -1,10 +1,10 @@
 import React from "react";
-
 import styled from "styled-components";
 import { ConnectedRouter } from "connected-react-router";
 import { Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import { toast } from "react-toastify";
+import ReactGA from "react-ga";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -15,6 +15,12 @@ toast.configure({
   hideProgressBar: true,
   autoClose: 1500
 });
+
+// config google analytics
+if (process.env.REACT_APP_GOOGLE_ANALYTICS_KEY) {
+  ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_KEY);
+  ReactGA.pageview(window.location.pathname + window.location.search);
+}
 
 const App = props => {
   return (
